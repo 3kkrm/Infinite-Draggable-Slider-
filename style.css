@@ -84,8 +84,8 @@ body {
 
 .wrapper .slider.dragging {
   cursor: grab;
-  /* scroll-snap-type: none; */
-  scroll-behavior: smooth;
+  scroll-snap-type: none;
+  scroll-behavior: auto;
 }
 
 .container .wrapper #prev {

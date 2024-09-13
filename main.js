@@ -37,23 +37,6 @@ const arrowBtns = document.querySelectorAll(".wrapper .btn");
 let slideWidth;
 let currentSlide = 1;
 
-// - Infinite Loop
-const slidesChildren = Array.from(document.querySelectorAll(".img"));
-let singleSlineWidth = document.querySelector(".slider .img").offsetWidth;
-
-let slidesNumber = Math.round(sliderElement.offsetWidth / singleSlineWidth);
-
-slidesChildren
-  .slice(-slidesNumber)
-  .reverse()
-  .forEach((slide) => {
-    sliderElement.insertAdjacentHTML("afterbegin", slide.outerHTML);
-  });
-
-slidesChildren.slice(0, slidesNumber).forEach((slide) => {
-  sliderElement.insertAdjacentHTML("beforeend", slide.outerHTML);
-});
-
 // - Slider Script
 
 let isDragging = false;
@@ -79,6 +62,25 @@ const dragStop = () => {
   sliderElement.classList.remove("dragging");
 };
 
+const dragStartP = (ele) => {
+  isDragging = true;
+  sliderElement.classList.add("dragging");
+
+  //Records the initial cursor and scroll position
+  startX = ele.touches[0].pageX;
+  startScrollLeft = sliderElement.scrollLeft;
+};
+
+const draggingP = (e) => {
+  if (!isDragging) return;
+  sliderElement.scrollLeft = startScrollLeft - (e.touches[0].pageX - startX);
+};
+
+const dragStopP = () => {
+  isDragging = false;
+  sliderElement.classList.remove("dragging");
+};
+
 const infiniteScroll = () => {
   if (sliderElement.scrollLeft === 0) {
     sliderElement.classList.add("no-transition");
@@ -98,8 +100,11 @@ const infiniteScroll = () => {
 };
 
 sliderElement.addEventListener("mousedown", dragStart);
+sliderElement.addEventListener("touchstart", dragStartP);
 sliderElement.addEventListener("mousemove", dragging);
+sliderElement.addEventListener("touchmove", draggingP);
 document.addEventListener("mouseup", dragStop);
+document.addEventListener("touchend", dragStopP);
 sliderElement.addEventListener("scroll", infiniteScroll);
 
 // - Arrow Buttons Script
@@ -140,4 +145,21 @@ arrowBtns.forEach((btn) => {
       }
     }
   });
+});
+
+// - Infinite Loop
+const slidesChildren = Array.from(document.querySelectorAll(".img"));
+let singleSlineWidth = document.querySelector(".slider .img").offsetWidth;
+
+let slidesNumber = Math.round(sliderElement.offsetWidth / singleSlineWidth);
+
+slidesChildren
+  .slice(-slidesNumber)
+  .reverse()
+  .forEach((slide) => {
+    sliderElement.insertAdjacentHTML("afterbegin", slide.outerHTML);
+  });
+
+slidesChildren.slice(0, slidesNumber).forEach((slide) => {
+  sliderElement.insertAdjacentHTML("beforeend", slide.outerHTML);
 });

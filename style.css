@@ -69,7 +69,7 @@ body {
 }
 
 .wrapper .slider::-webkit-scrollbar {
-  display: none;
+  /* display: none; */
 }
 
 @media (max-width: 1199px) {
@@ -84,8 +84,20 @@ body {
 
 .wrapper .slider.dragging {
   cursor: grab;
-  scroll-snap-type: none;
-  scroll-behavior: auto;
+  scroll-behavior: smooth;
+}
+
+@media (max-width: 849px) {
+  .wrapper .slider {
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: 0;
+  }
+  .wrapper .slider.dragging {
+    cursor: grab;
+    scroll-snap-type: none;
+    scroll-behavior: auto;
+  }
 }
 
 .container .wrapper #prev {

@@ -54,6 +54,7 @@ const dragStart = (ele) => {
 
 const dragging = (e) => {
   if (!isDragging) return;
+  e.preventDefault();
   sliderElement.scrollLeft = startScrollLeft - (e.pageX - startX);
 };
 
@@ -62,37 +63,16 @@ const dragStop = () => {
   sliderElement.classList.remove("dragging");
 };
 
-const dragStartP = (ele) => {
-  isDragging = true;
-  sliderElement.classList.add("dragging");
-
-  //Records the initial cursor and scroll position
-  startX = ele.touches[0].pageX;
-  startScrollLeft = sliderElement.scrollLeft;
-};
-
-const draggingP = (e) => {
-  if (!isDragging) return;
-  sliderElement.scrollLeft = startScrollLeft - (e.touches[0].pageX - startX);
-};
-
-const dragStopP = () => {
-  isDragging = false;
-  sliderElement.classList.remove("dragging");
-};
-
 const infiniteScroll = () => {
+  const totalWidth = sliderElement.scrollWidth;
+  const sliderWidth = sliderElement.offsetWidth;
+
   if (sliderElement.scrollLeft === 0) {
     sliderElement.classList.add("no-transition");
     sliderElement.scrollLeft =
       sliderElement.scrollWidth - 2 * sliderElement.offsetWidth;
     sliderElement.classList.remove("no-transition");
-  } else if (
-    Math.ceil(
-      sliderElement.scrollLeft ==
-        sliderElement.scrollWidth - sliderElement.offsetWidth
-    )
-  ) {
+  } else if (Math.ceil(sliderElement.scrollLeft === totalWidth - sliderWidth)) {
     sliderElement.classList.add("no-transition");
     sliderElement.scrollLeft = sliderElement.offsetWidth;
     sliderElement.classList.remove("no-transition");
@@ -100,11 +80,8 @@ const infiniteScroll = () => {
 };
 
 sliderElement.addEventListener("mousedown", dragStart);
-sliderElement.addEventListener("touchstart", dragStartP);
 sliderElement.addEventListener("mousemove", dragging);
-sliderElement.addEventListener("touchmove", draggingP);
 document.addEventListener("mouseup", dragStop);
-document.addEventListener("touchend", dragStopP);
 sliderElement.addEventListener("scroll", infiniteScroll);
 
 // - Arrow Buttons Script
@@ -112,16 +89,15 @@ sliderElement.addEventListener("scroll", infiniteScroll);
 arrowBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
     slideWidth = document.querySelector(".slider .img").offsetWidth;
-    sliderElement.scrollLeft +=
-      btn.id == "next" ? +(slideWidth + 15) : -(slideWidth + 15);
-
     if (btn.id == "next") {
+      sliderElement.scrollLeft += +(slideWidth + 15);
       if (currentSlide == slidesCount.length) {
         currentSlide = 1;
         return;
       }
       currentSlide += 1;
     } else {
+      sliderElement.scrollLeft += -(slideWidth + 15);
       if (currentSlide == 1) {
         currentSlide = slidesCount.length;
         return;

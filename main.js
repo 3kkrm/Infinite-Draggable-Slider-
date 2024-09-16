@@ -40,6 +40,25 @@ let slideWidth;
 let currentSlide = 1;
 let timeOutId;
 
+// - Autoplay Slider
+
+function autoPlay() {
+  slideWidth = sliderElement.offsetWidth;
+  if (window.innerWidth <= 1199) {
+    timeOutId = setTimeout(() => {
+      console.log(slideWidth);
+      sliderElement.scrollLeft += +slideWidth;
+    }, 2500);
+  } else {
+    timeOutId = setTimeout(() => {
+      console.log(slideWidth);
+      sliderElement.scrollLeft += +(slideWidth / 2);
+    }, 2000);
+  }
+}
+
+autoPlay();
+
 // - Slider Script
 
 let isDragging = false;
@@ -194,22 +213,3 @@ const checkMobile = () => {
 checkMobile();
 
 window.addEventListener("resize", checkMobile);
-
-// - Autoplay Slider
-
-function autoPlay() {
-  slideWidth = sliderElement.offsetWidth;
-  if (window.innerWidth <= 1199) {
-    timeOutId = setTimeout(() => {
-      console.log(slideWidth);
-      sliderElement.scrollLeft += +slideWidth;
-    }, 2500);
-  } else {
-    timeOutId = setTimeout(() => {
-      console.log(slideWidth);
-      sliderElement.scrollLeft += +(slideWidth / 2);
-    }, 2000);
-  }
-}
-
-autoPlay();

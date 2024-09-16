@@ -38,6 +38,7 @@ const nextArrow = document.querySelector("#next");
 const prevArrow = document.querySelector("#prev");
 let slideWidth;
 let currentSlide = 1;
+let timeOutId;
 
 // - Slider Script
 
@@ -79,12 +80,19 @@ const infiniteScroll = () => {
     sliderElement.scrollLeft = sliderElement.offsetWidth;
     sliderElement.classList.remove("no-transition");
   }
+
+  clearTimeout(timeOutId);
+  if (!wrapper.matches(":hover")) autoPlay();
 };
 
 sliderElement.addEventListener("mousedown", dragStart);
 sliderElement.addEventListener("mousemove", dragging);
 document.addEventListener("mouseup", dragStop);
 sliderElement.addEventListener("scroll", infiniteScroll);
+wrapper.addEventListener("mouseenter", () => {
+  clearTimeout(timeOutId);
+});
+wrapper.addEventListener("mouseleave", autoPlay);
 
 // - Arrow Buttons Script
 
@@ -101,104 +109,6 @@ arrowBtns.forEach((btn) => {
 
 let bullets = document.querySelectorAll(".bullet");
 bullets[0].classList.add("active");
-
-let scrollTimeout;
-
-sliderElement.addEventListener("scroll", () => {
-  slideWidth = sliderElement.offsetWidth;
-
-  // Clear the previous timeout
-  clearTimeout(scrollTimeout);
-
-  // Set a new timeout
-  scrollTimeout = setTimeout(() => {
-    const index = Math.round(sliderElement.scrollLeft / (slideWidth + 15));
-    currentSlide = index;
-    bullets.forEach((bullet, index) => {
-      bullet.classList.remove("active");
-
-      if (bullet.classList.contains(currentSlide)) {
-        if (currentSlide == slidesCount.length) {
-          currentSlide = 1;
-        }
-        bullet.classList.add("active");
-      }
-    });
-  }, 50);
-});
-
-// nextArrow.onclick = () => {
-//   setTimeout(() => {
-//     if (currentSlide == slidesCount.length) {
-//       currentSlide = 1;
-//       for (let i = 0; i < bullets.length; i++) {
-//         bullets[i].classList.remove("active");
-//       }
-//       for (let i = 0; i < bullets.length; i++) {
-//         if (bullets[i].classList.contains(currentSlide)) {
-//           bullets[i].classList.add("active");
-//         }
-//       }
-//       return;
-//     }
-//     currentSlide += 1;
-//     for (let i = 0; i < bullets.length; i++) {
-//       bullets[i].classList.remove("active");
-//     }
-//     for (let i = 0; i < bullets.length; i++) {
-//       if (bullets[i].classList.contains(currentSlide)) {
-//         bullets[i].classList.add("active");
-//       }
-//     }
-//   }, 350);
-// };
-
-// prevArrow.onclick = () => {
-//   setTimeout(() => {
-//     if (currentSlide == 1) {
-//       currentSlide = slidesCount.length;
-//       for (let i = 0; i < bullets.length; i++) {
-//         bullets[i].classList.remove("active");
-//       }
-//       for (let i = 0; i < bullets.length; i++) {
-//         if (bullets[i].classList.contains(currentSlide)) {
-//           bullets[i].classList.add("active");
-//         }
-//       }
-//       return;
-//     }
-//     currentSlide -= 1;
-//     for (let i = 0; i < bullets.length; i++) {
-//       bullets[i].classList.remove("active");
-//     }
-//     for (let i = 0; i < bullets.length; i++) {
-//       if (bullets[i].classList.contains(currentSlide)) {
-//         bullets[i].classList.add("active");
-//       }
-//     }
-//   }, 350);
-// };
-
-// arrowBtns.forEach((btn) => {
-//   setTimeout(() => {
-//     btn.addEventListener("click", () => {
-//       console.log("after 2 sec");
-//     });
-//   }, 2000);
-// });
-
-// arrowBtns.forEach((btn) => {
-//   btn.addEventListener("click", () => {
-//     for (let i = 0; i < bullets.length; i++) {
-//       bullets[i].classList.remove("active");
-//     }
-//     for (let i = 0; i < bullets.length; i++) {
-//       if (bullets[i].classList.contains(currentSlide)) {
-//         bullets[i].classList.add("active");
-//       }
-//     }
-//   });
-// });
 
 // - Infinite Loop
 
@@ -217,3 +127,89 @@ slidesChildren
 slidesChildren.slice(0, slidesNumber).forEach((slide) => {
   sliderElement.insertAdjacentHTML("beforeend", slide.outerHTML);
 });
+
+// - Update the bullet possition
+
+const checkMobile = () => {
+  if (window.innerWidth <= 1199) {
+    let scrollTimeout;
+
+    sliderElement.addEventListener("scroll", () => {
+      slideWidth = sliderElement.offsetWidth;
+
+      // Clear the previous timeout
+      clearTimeout(scrollTimeout);
+
+      // Set a new timeout
+      scrollTimeout = setTimeout(() => {
+        const index = Math.round(sliderElement.scrollLeft / (slideWidth + 15));
+        currentSlide = index;
+        bullets.forEach((bullet, index) => {
+          bullet.classList.remove("active");
+
+          if (bullet.classList.contains(currentSlide)) {
+            if (currentSlide == slidesCount.length) {
+              currentSlide = 1;
+            }
+            bullet.classList.add("active");
+          }
+        });
+      }, 50);
+    });
+  } else {
+    let scrollTimeout;
+
+    sliderElement.addEventListener("scroll", () => {
+      slideWidth = sliderElement.offsetWidth;
+
+      // Clear the previous timeout
+      clearTimeout(scrollTimeout);
+
+      // Set a new timeout
+      scrollTimeout = setTimeout(() => {
+        let index = Math.round(
+          sliderElement.scrollLeft / ((slideWidth + 15) / 2)
+        );
+
+        if (index == 1) {
+          index = slidesCount.length + 1;
+        }
+
+        currentSlide = index - 1;
+        bullets.forEach((bullet, index) => {
+          bullet.classList.remove("active");
+
+          if (bullet.classList.contains(currentSlide)) {
+            if (currentSlide == slidesCount.length) {
+              currentSlide = 1;
+            }
+            bullet.classList.add("active");
+          }
+        });
+      }, 50);
+    });
+  }
+};
+
+checkMobile();
+
+window.addEventListener("resize", checkMobile);
+
+// - Autoplay Slider
+
+function autoPlay() {
+  slideWidth = sliderElement.offsetWidth;
+  if (window.innerWidth <= 1199) {
+    timeOutId = setTimeout(() => {
+      console.log(slideWidth);
+      sliderElement.scrollLeft += +slideWidth;
+    }, 2500);
+  } else {
+    timeOutId = setTimeout(() => {
+      console.log(slideWidth);
+      sliderElement.scrollLeft += +(slideWidth / 2);
+    }, 2000);
+  }
+}
+
+autoPlay();

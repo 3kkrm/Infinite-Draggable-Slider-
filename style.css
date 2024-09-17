@@ -180,6 +180,6 @@ body {
 }
 
 #bullets-container span.active {
-  background-color: red;
+  background-color: #fff;
   border: 2px solid #fff;
 }

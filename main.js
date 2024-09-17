@@ -40,6 +40,71 @@ let slideWidth;
 let currentSlide = 1;
 let timeOutId;
 
+// - Update the bullet possition
+
+const checkMobile = () => {
+  if (window.innerWidth <= 1199) {
+    let scrollTimeout;
+
+    sliderElement.addEventListener("scroll", () => {
+      slideWidth = sliderElement.offsetWidth;
+
+      // Clear the previous timeout
+      clearTimeout(scrollTimeout);
+
+      // Set a new timeout
+      scrollTimeout = setTimeout(() => {
+        const index = Math.round(sliderElement.scrollLeft / (slideWidth + 15));
+        currentSlide = index;
+        bullets.forEach((bullet, index) => {
+          bullet.classList.remove("active");
+
+          if (bullet.classList.contains(currentSlide)) {
+            if (currentSlide == slidesCount.length) {
+              currentSlide = 1;
+            }
+            bullet.classList.add("active");
+          }
+        });
+      }, 10);
+    });
+  } else {
+    let scrollTimeout;
+
+    sliderElement.addEventListener("scroll", () => {
+      slideWidth = sliderElement.offsetWidth;
+
+      // Clear the previous timeout
+      clearTimeout(scrollTimeout);
+
+      // Set a new timeout
+      scrollTimeout = setTimeout(() => {
+        let index = Math.round(
+          sliderElement.scrollLeft / ((slideWidth + 15) / 2)
+        );
+
+        if (index == 1) {
+          index = slidesCount.length + 1;
+        }
+
+        currentSlide = index - 1;
+        bullets.forEach((bullet, index) => {
+          bullet.classList.remove("active");
+
+          if (bullet.classList.contains(currentSlide)) {
+            if (currentSlide == slidesCount.length) {
+              currentSlide = 1;
+            }
+            bullet.classList.add("active");
+          }
+        });
+      }, 50);
+    });
+  }
+};
+
+checkMobile();
+
 // - Autoplay Slider
 
 // function autoPlay() {
@@ -135,71 +200,6 @@ slidesChildren
 slidesChildren.slice(0, slidesNumber).forEach((slide) => {
   sliderElement.insertAdjacentHTML("beforeend", slide.outerHTML);
 });
-
-// - Update the bullet possition
-
-const checkMobile = () => {
-  if (window.innerWidth <= 1199) {
-    let scrollTimeout;
-
-    sliderElement.addEventListener("scroll", () => {
-      slideWidth = sliderElement.offsetWidth;
-
-      // Clear the previous timeout
-      clearTimeout(scrollTimeout);
-
-      // Set a new timeout
-      scrollTimeout = setTimeout(() => {
-        const index = Math.round(sliderElement.scrollLeft / (slideWidth + 15));
-        currentSlide = index;
-        bullets.forEach((bullet, index) => {
-          bullet.classList.remove("active");
-
-          if (bullet.classList.contains(currentSlide)) {
-            if (currentSlide == slidesCount.length) {
-              currentSlide = 1;
-            }
-            bullet.classList.add("active");
-          }
-        });
-      }, 10);
-    });
-  } else {
-    let scrollTimeout;
-
-    sliderElement.addEventListener("scroll", () => {
-      slideWidth = sliderElement.offsetWidth;
-
-      // Clear the previous timeout
-      clearTimeout(scrollTimeout);
-
-      // Set a new timeout
-      scrollTimeout = setTimeout(() => {
-        let index = Math.round(
-          sliderElement.scrollLeft / ((slideWidth + 15) / 2)
-        );
-
-        if (index == 1) {
-          index = slidesCount.length + 1;
-        }
-
-        currentSlide = index - 1;
-        bullets.forEach((bullet, index) => {
-          bullet.classList.remove("active");
-
-          if (bullet.classList.contains(currentSlide)) {
-            if (currentSlide == slidesCount.length) {
-              currentSlide = 1;
-            }
-            bullet.classList.add("active");
-          }
-        });
-      }, 50);
-    });
-  }
-};
-
-checkMobile();
 
 window.addEventListener("resize", checkMobile);
 sliderElement.addEventListener("mousedown", dragStart);

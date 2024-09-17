@@ -206,7 +206,7 @@ sliderElement.addEventListener("mousedown", dragStart);
 sliderElement.addEventListener("mousemove", dragging);
 document.addEventListener("mouseup", dragStop);
 sliderElement.addEventListener("scroll", infiniteScroll);
-wrapper.addEventListener("mouseenter", () => {
-  clearTimeout(timeOutId);
-});
-wrapper.addEventListener("mouseleave", autoPlay);
+// wrapper.addEventListener("mouseenter", () => {
+//   clearTimeout(timeOutId);
+// });
+// wrapper.addEventListener("mouseleave", autoPlay);
